@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<project name="Othello" default="default" basedir=".">
+	<description>
+		Just a simple build file which is used to build the application
+		and create the distribution of this project.
+	</description>
+	
+	
+	<property environment="env"/>
+	<property name="src" location="src/" />
+	<property name="test" location="test/" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist/" />
+	<property name="target" value="Othello" />	
+	
+	<target name="default" depends="clean,compile, javadoc, dist" />
+	
+	<target name="clean">
+		<delete dir="${dist}" />
+		<delete dir="${build}"/>
+	</target>
+	
+	<target name="compile" depends="clean">
+		<mkdir dir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false"/>
+		<jar destfile="${build}/${target}.jar" basedir="${build}">
+			<manifest>
+				<attribute name="Main-Class" value="org.yvka.Beleg2.Main"></attribute>
+				<attribute name="Title" value="${target}"/>
+				<attribute name="Version" value="1.0"/>
+				<attribute name="Vendor" value="Yves Kaufmann"/>
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="javadoc" depends="compile">
+		<javadoc packagenames="org.yvka.Beleg2.*"
+		           sourcepath="${src}"
+				   overview="${src}/overview.html"	
+		           defaultexcludes="yes"
+		           destdir="docs/ApiDoc"
+		           author="true"
+		           version="true"
+		           use="true"
+				   doctitle="${target}"
+		           windowtitle="${target}">
+			   <link href="http://docs.oracle.com/javase/8/docs/api/"/>
+		  </javadoc>
+	</target>
+		
+	
+	<target name="dist" depends="javadoc">
+		<mkdir dir="${dist}"/>
+		<zip destfile="${dist}/${target}.zip">
+			<zipfileset dir="${build}" includes="${target}.jar" fullpath="${target}/lib/${target}.jar"/>
+			<zipfileset dir="${src}" prefix="${target}/src"/>
+			<zipfileset dir="docs" prefix="${target}/docu"/>
+			<zipfileset dir="bin" prefix="${target}/bin"/>
+		</zip>
+	</target>
+	
+</project>
