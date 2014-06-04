@@ -1,10 +1,8 @@
 package org.yvka.Beleg2.game;
 
-import java.util.Properties;
-
 import org.yvka.Beleg2.game.GameBoard.GameState;
 
-public class GameEvent extends Properties {
+public class GameEvent {
 	private GameState state;
 	private GameBoard field;
 	
