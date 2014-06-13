@@ -2,16 +2,17 @@ package org.yvka.Beleg2.game;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Stream;
 
 public class GameBoard {
-	protected enum Stone {
+	public enum Stone {
 		UNSET,
 		WHITE_STONE,
-		BLACK_STONE;
+		BLACK_STONE,
+		UNSET_BUT_POSSIBLE_MOVE;
 		
 		boolean isEmpty() {
-			return this.compareTo(UNSET) == 0;
+			return this.compareTo(UNSET) == 0 || this.compareTo(UNSET_BUT_POSSIBLE_MOVE) == 0;
 		}
 		
 		boolean isWhiteStone() {
@@ -29,7 +30,7 @@ public class GameBoard {
 		Stone getOpponentStone() {
 			if(isBlackStone()) return WHITE_STONE;
 			if(isWhiteStone()) return BLACK_STONE;
-			return UNSET;
+			return this;
 		}
 	};
 
@@ -48,8 +49,8 @@ public class GameBoard {
 	private List<FieldVector> freeFields = new ArrayList<>();
 	
 	public GameBoard() {
-		firstPlayer = new Player("Spieler 1", Stone.WHITE_STONE);
-		secondPlayer = new Player("Spieler 2", Stone.BLACK_STONE);
+		firstPlayer = new Player("White", Stone.WHITE_STONE);
+		secondPlayer = new Player("Black", Stone.BLACK_STONE);
 	}
 	
 	public void registerGameEventListener(GameEventListener listener) {
@@ -115,15 +116,36 @@ public class GameBoard {
 		toBeReversedStones.clear();
 		turnNumber++; // nextTurn
 		
-		if(freeFields.stream().filter(this::canCurrentPlayerSetStoneAt).count() == 0) {
+		if(!performPossibleMoveChecks()) {
 			turnNumber++;
-			if(freeFields.stream().filter(this::canCurrentPlayerSetStoneAt).count() == 0) {
+			if(!performPossibleMoveChecks()) {
 				freeFields.clear(); // --> end game
 			}
 		}
 		
 		notifyListener();
 		return true;
+	}
+	
+	public boolean performPossibleMoveChecks() {
+		Stream<FieldVector> freeFieldsStream = freeFields.stream();
+		
+		long sizeOfPossileMoves = freeFieldsStream.filter(fieldVector -> {
+			if(canCurrentPlayerSetStoneAt(fieldVector)) {
+				fieldVector.setField(Stone.UNSET_BUT_POSSIBLE_MOVE);
+				return true;
+			} 
+			if(fieldVector.getField().isEmpty()) fieldVector.setField(Stone.UNSET);
+			return false;
+		}).count();
+		
+		return sizeOfPossileMoves > 0;
+	}
+	
+	public Stone getStone(int row, int col) {
+		FieldVector field = new FieldVector(this, row, col);
+		field.ensureIsInBound();
+		return field.getField();
 	}
 	
 	public void startNewGame(int fieldSize) {
@@ -154,6 +176,7 @@ public class GameBoard {
 		turnNumber = 0;
 		getFirstPlayer().resetPoints();
 		getSecondPlayer().resetPoints();
+		performPossibleMoveChecks();
 		notifyListener();
 		
 	}
@@ -179,6 +202,11 @@ public class GameBoard {
 	
 	public Player getOppositePlayer() {
 		return turnNumber % 2 == 0 ? getSecondPlayer() : getFirstPlayer();
+	}
+	
+	
+	public int getSize() {
+		return fields.length;
 	}
 	
 	@Override

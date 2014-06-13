@@ -2,128 +2,126 @@ package org.yvka.Beleg1.ui;
 
 import javafx.scene.Group;
 import javafx.scene.Parent;
-import javafx.scene.effect.BlurType;
+import javafx.scene.effect.Glow;
 import javafx.scene.effect.InnerShadow;
-import javafx.scene.effect.Light;
-import javafx.scene.effect.Lighting;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import org.yvka.Beleg2.game.GameBoard.Stone;
+
 public class Field extends Parent {
-	public static final int FIELD_WIDTH = 50;
-	public enum State {
-		UNSET,
-		UNSET_BUT_POSSIBLE_MOVE,
-		BLACK_STONE,
-		WHITE_STONE
-	}
-	private State state;
-	private Circle stone;
 	
-	public Field(int row, int col, boolean b) {
+	public interface OnFieldClickHandler {
+		public void handle(Field field, MouseEvent event);
+	}
+	
+	public static final int FIELD_WIDTH = 50;
+	private Stone fieldState;
+	private Circle stone;
+	private int row;
+	private int col;
+	
+	public Field(int row, int col, boolean b, OnFieldClickHandler clickHandler) {
+		
+		this.row = row;
+		this.col = col;
 		
 		Group root = new Group();
-		Rectangle rect = new Rectangle();
+		Rectangle fieldRect = new Rectangle();
 		if(b) {
-			rect.setFill(Color.web("0x357e1c"));
+			fieldRect.setFill(Color.web("0x357e1c"));
 		} else {
-			rect.setFill(Color.web("0x2b6a16"));
+			fieldRect.setFill(Color.web("0x2b6a16"));
 		}
 
-		rect.setWidth(FIELD_WIDTH);
-		rect.setHeight(FIELD_WIDTH);
-		rect.setStroke(Color.BLACK);
-		rect.setStrokeWidth(2.0);
+		fieldRect.setWidth(FIELD_WIDTH);
+		fieldRect.setHeight(FIELD_WIDTH);
+		fieldRect.setStroke(Color.BLACK);
+		fieldRect.setStrokeWidth(2.0);
+
+		fieldRect.setOnMouseClicked((event) -> {
+			if( clickHandler != null ) {
+				clickHandler.handle(this, event);
+			}
+		});
 		
-		
-		 Light.Point light = new Light.Point();
-		 light.setX(100);
-		 light.setY(40);
-		 light.setZ(600);
-		 light.setColor(Color.GREEN.desaturate());
-		
-		 Lighting lighting = new Lighting();
-		 lighting.setLight(light);
-		 lighting.setSurfaceScale(3.0);
-		rect.setEffect(lighting);
-		
+//		fieldRect.setOnMouseEntered((event) -> {
+//			if(!Stone.UNSET.equals(fieldState)) return;
+//			stone.setVisible(true);
+//			stone.setOpacity(0.2);
+//			Glow glow = new Glow(0.1);	
+//			InnerShadow shadow = new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5));
+//			glow.setInput(shadow);
+//			stone.setEffect(glow);
+//		});
+//		
+//		fieldRect.setOnMouseExited((event) -> {
+//			stone.setVisible(!Stone.UNSET.equals(fieldState));
+//			stone.setOpacity(1.0);
+//			fieldRect.setEffect(null);
+//		});
 		
 		stone = new Circle(FIELD_WIDTH / 2.5, Color.WHITE );
-		stone.setCenterX( rect.getX() + rect.getWidth() / 2);
-		stone.setCenterY( rect.getY() + rect.getHeight() / 2);
+		stone.setCenterX( fieldRect.getX() + fieldRect.getWidth() / 2);
+		stone.setCenterY( fieldRect.getY() + fieldRect.getHeight() / 2);
 		stone.setVisible(false);
 		stone.setMouseTransparent(true);
-		rect.setOnMouseClicked((event) -> {
-			System.out.println("clicked");
-			toogleState();
-		});
 		
-		rect.setOnMouseEntered((event) -> {
-			if(!State.UNSET.equals(state)) return;
-			
-			InnerShadow shadow = new InnerShadow();
-			shadow.setOffsetX(-2);
-			shadow.setOffsetY(4);
-			shadow.setBlurType(BlurType.TWO_PASS_BOX);
-			shadow.setRadius(6);
-			
-			// new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5))
-			
-			stone.setVisible(true);
-			stone.setOpacity(1.0);
-			stone.setEffect(shadow);
-			stone.setFill(new LinearGradient(0.6, 0.25, 0.6, 20, true, CycleMethod.NO_CYCLE, 
-				new Stop(0.0, Color.GREEN),
-				new Stop(0.5, new Color(1.0, 1.0, 1.0, 0))
-			));
-			
-			
-			
-		});
-		
-		rect.setOnMouseExited((event) -> {
-			stone.setVisible(!State.UNSET.equals(state));
-			stone.setOpacity(1.0);
-			rect.setEffect(null);
-		});
-		
-		root.getChildren().addAll(rect, stone);
-		setState(State.UNSET);
+		root.getChildren().addAll(fieldRect, stone);
+		setState(Stone.UNSET);
 		getChildren().add(root);
 		
 	}
 	
+	public int getRow() {
+		return this.row;
+	}
+	
+	public int getCol() {
+		return this.col;
+	}
+	
 	public void toogleState() {
-		if(State.UNSET.equals(state) || State.BLACK_STONE.equals(state)) {
-			setState(State.WHITE_STONE);
+		if(Stone.UNSET.equals(fieldState) || Stone.BLACK_STONE.equals(fieldState)) {
+			setState(Stone.WHITE_STONE);
 		} else {
-			setState(State.BLACK_STONE);
+			setState(Stone.BLACK_STONE);
 		}
 	}
 	
-	public void setState(State state) {
-		this.state = state;
+	public void setState(Stone state) {
+		this.fieldState = state;
+		stone.setEffect(null);
+		stone.setOpacity(1.0);
 		switch(state) {
 			case UNSET:
-			case UNSET_BUT_POSSIBLE_MOVE:
 				stone.setVisible(false);
+			break;
+			case UNSET_BUT_POSSIBLE_MOVE:
+				Glow glow = new Glow(0.1);	
+				InnerShadow shadow = new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5));
+				glow.setInput(shadow);
+				stone.setEffect(glow);
+				stone.setFill(Color.WHITE);
+				stone.setOpacity(0.2);
+				stone.setVisible(true);
 			break;
 			case BLACK_STONE:
 				stone.setVisible(true);
+				stone.setEffect(new InnerShadow(20, 5, 1, new Color(1.0, 1.0, 1.0, .5)));
 				stone.setFill(Color.BLACK);
 			break;
 			case WHITE_STONE:
 				stone.setVisible(true);
+				stone.setEffect(new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5)));
 				stone.setFill(Color.WHITE);
 			break;
 		}
 	}
 	
-	public State getState() {
-		return state;
+	public Stone getState() {
+		return fieldState;
 	}
 }
