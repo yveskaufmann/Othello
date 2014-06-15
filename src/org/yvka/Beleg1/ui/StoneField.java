@@ -9,12 +9,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
+import org.yvka.Beleg2.game.GameBoard;
 import org.yvka.Beleg2.game.GameBoard.Stone;
+import org.yvka.Beleg2.game.GameEvent;
+import org.yvka.Beleg2.game.GameEventListener;
+import org.yvka.Beleg2.game.Player;
 
-public class Field extends Parent {
+public class StoneField extends Parent implements GameEventListener {
 	
 	public interface OnFieldClickHandler {
-		public void handle(Field field, MouseEvent event);
+		public void handle(StoneField field, MouseEvent event);
 	}
 	
 	public static final int FIELD_WIDTH = 50;
@@ -22,8 +26,9 @@ public class Field extends Parent {
 	private Circle stone;
 	private int row;
 	private int col;
+	private Player currentPlayer = null;
 	
-	public Field(int row, int col, boolean b, OnFieldClickHandler clickHandler) {
+	public StoneField(int row, int col, boolean b, OnFieldClickHandler clickHandler) {
 		
 		this.row = row;
 		this.col = col;
@@ -46,23 +51,7 @@ public class Field extends Parent {
 				clickHandler.handle(this, event);
 			}
 		});
-		
-//		fieldRect.setOnMouseEntered((event) -> {
-//			if(!Stone.UNSET.equals(fieldState)) return;
-//			stone.setVisible(true);
-//			stone.setOpacity(0.2);
-//			Glow glow = new Glow(0.1);	
-//			InnerShadow shadow = new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5));
-//			glow.setInput(shadow);
-//			stone.setEffect(glow);
-//		});
-//		
-//		fieldRect.setOnMouseExited((event) -> {
-//			stone.setVisible(!Stone.UNSET.equals(fieldState));
-//			stone.setOpacity(1.0);
-//			fieldRect.setEffect(null);
-//		});
-		
+	
 		stone = new Circle(FIELD_WIDTH / 2.5, Color.WHITE );
 		stone.setCenterX( fieldRect.getX() + fieldRect.getWidth() / 2);
 		stone.setCenterY( fieldRect.getY() + fieldRect.getHeight() / 2);
@@ -104,7 +93,7 @@ public class Field extends Parent {
 				InnerShadow shadow = new InnerShadow(20, 5, 1, new Color(0, 0, 0, .5));
 				glow.setInput(shadow);
 				stone.setEffect(glow);
-				stone.setFill(Color.WHITE);
+				stone.setFill( currentPlayer == null || Stone.WHITE_STONE.equals(currentPlayer.getStoneColor()) ? Color.WHITE : Color.BLACK);
 				stone.setOpacity(0.2);
 				stone.setVisible(true);
 			break;
@@ -123,5 +112,11 @@ public class Field extends Parent {
 	
 	public Stone getState() {
 		return fieldState;
+	}
+
+	@Override
+	public void OnGameEvent(GameBoard board, GameEvent event) {
+		currentPlayer = board.getCurrentPlayer();
+		setState(board.getStone(row, col));
 	}
 }

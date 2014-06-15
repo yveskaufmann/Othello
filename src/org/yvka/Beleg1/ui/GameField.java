@@ -2,11 +2,9 @@ package org.yvka.Beleg1.ui;
 
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.Region;
 
 import org.yvka.Beleg2.game.GameBoard;
-import org.yvka.Beleg2.game.GameBoard.Stone;
 import org.yvka.Beleg2.game.GameEvent;
 import org.yvka.Beleg2.game.GameEventListener;
 
@@ -31,6 +29,7 @@ public class GameField extends Region implements GameEventListener {
 	}
 	
 	public void setSize(int size) {
+		gameLogic.removeAllGameEventListenersByType(StoneField.class);
 		this.size = size;
 		fieldGroup = new Group();
 		fieldGroup.relocate(30, 30);
@@ -38,15 +37,15 @@ public class GameField extends Region implements GameEventListener {
 			for(int col = 0; col < size; col++) {
 				
 				boolean isAlternativeField = (row * size + col) % 2 == (size % 2 == 0 ? row % 2 : 0);
-				Field field = new Field(row, col, isAlternativeField, (currField, event) -> {
+				StoneField field = new StoneField(row, col, isAlternativeField, (currField, event) -> {
 					if(gameLogic.canCurrentPlayerSetStoneAt(currField.getRow(), currField.getCol())) {
 						gameLogic.setStone(currField.getRow(), currField.getCol());
 					}
 				});
-				
+				gameLogic.registerGameEventListener(field);
 				field.relocate(
-					col *(Field.FIELD_WIDTH + FIELD_GAP_WIDTH), 
-					row * (Field.FIELD_WIDTH + FIELD_GAP_WIDTH));			
+					col *(StoneField.FIELD_WIDTH + FIELD_GAP_WIDTH), 
+					row * (StoneField.FIELD_WIDTH + FIELD_GAP_WIDTH));			
 				fieldGroup.getChildren().add(field);
 			}
 		}
@@ -58,25 +57,26 @@ public class GameField extends Region implements GameEventListener {
 		gameLogic.startNewGame(size);
 	}
 	
-	private void render(GameBoard board, GameEvent event) {
-		for(Node fieldNode : fieldGroup.getChildren()) {
-			Field field = (Field) fieldNode;
-			Stone stone = board.getStone(field.getRow(), field.getCol());
-			field.setState(stone);
-		}
-	}
-	
 	@Override
 	public void OnGameEvent(GameBoard board, GameEvent event) {	
 		switch(event.getState()) {
 			case NEW_GAME:
 			break;
 			case END_GAME:
-				System.out.println(board.getCurrentPlayer().getName() + " wins. ");
+				OthelloApplication
+				.getInstance()
+				.showModalDimmer(
+					new GameEndNotification(
+						gameLogic.getFirstPlayer(), 
+						gameLogic.getSecondPlayer(),
+						(e) -> {
+							startNewGame();
+						}
+					)
+				);
 			break;
 			case NEXT_TURN:
 			break;
 		}
-		render(board, event);
 	}
 }

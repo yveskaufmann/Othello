@@ -61,6 +61,10 @@ public class GameBoard {
 		gameEventListeners.remove(listener);
 	}
 	
+	public void removeAllGameEventListenersByType(Class<?> type) {
+		gameEventListeners.removeIf(listener -> type.equals(listener.getClass()));
+	}
+	
 	protected void notifyListener() {
 		GameEvent event = new GameEvent(getGameState(), this);
 		for(GameEventListener listener : gameEventListeners) {
