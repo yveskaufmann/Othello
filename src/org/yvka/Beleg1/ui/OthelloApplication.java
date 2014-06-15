@@ -68,9 +68,7 @@ public class OthelloApplication extends Application {
 			gameField = new GameField(gameLogic);
 			gameField.setId(GAME_FIELD_ID);
 			
-			gameControlPanel.setOnNewGameClicked((event) -> {
-				
-showModalDimmer(new GameEndNotification(gameLogic.getFirstPlayer(), gameLogic.getSecondPlayer(), null));
+			gameControlPanel.setOnNewGameClicked((event) -> {				
 				gameField.startNewGame();
 			});
 

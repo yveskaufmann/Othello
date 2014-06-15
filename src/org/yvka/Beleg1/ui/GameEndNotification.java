@@ -79,9 +79,9 @@ public class GameEndNotification extends BorderPane {
 		whitePoints = new Label(firstPlayer.getStones() + "");
 		whitePoints.setTextFill(Color.WHITE);
 		whitePoints.setFont(new Font(20));
-		whitePoints.setAlignment(Pos.CENTER);
 		
-		leftColumn.setPadding(new Insets(60, 0, 50, 100));
+		leftColumn.setAlignment(Pos.CENTER);
+		leftColumn.setPadding(new Insets(60, 0, 50, 80));
 		leftColumn.getChildren().addAll(whitePlayerLabel, whitePoints);
 		
 		blackPlayerLabel = new Label(blackPlayer.getName());
@@ -93,7 +93,8 @@ public class GameEndNotification extends BorderPane {
 		blackPoints.setFont(new Font(20));
 		blackPoints.setAlignment(Pos.CENTER);
 		
-		rightColumn.setPadding(new Insets(60, 100, 50, 0));
+		rightColumn.setAlignment(Pos.CENTER);
+		rightColumn.setPadding(new Insets(60, 80, 50, 0));
 		rightColumn.getChildren().addAll(blackPlayerLabel, blackPoints);
 		
 		pressToContinueLabel = new Label("Click here for continue.");
