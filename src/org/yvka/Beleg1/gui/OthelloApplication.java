@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.DepthTest;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -78,7 +79,11 @@ public class OthelloApplication extends Application {
 			scene = new Scene(layeredPane);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			
+			
 			primaryStage.setResizable(false);
+			primaryStage.getIcons().add(new Image(
+				getClass().getResourceAsStream("icon.png")
+			));
 			primaryStage.sizeToScene();
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Reversi");

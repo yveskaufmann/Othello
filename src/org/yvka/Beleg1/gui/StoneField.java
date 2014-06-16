@@ -1,5 +1,6 @@
 package org.yvka.Beleg1.gui;
 
+import javafx.animation.Timeline;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.effect.Glow;
@@ -84,6 +85,7 @@ public class StoneField extends Parent implements GameEventHandler {
 		this.fieldState = state;
 		stone.setEffect(null);
 		stone.setOpacity(1.0);
+		
 		switch(state) {
 			case UNSET:
 				stone.setVisible(false);
