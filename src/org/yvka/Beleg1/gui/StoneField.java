@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -12,10 +12,10 @@ import javafx.scene.shape.Rectangle;
 import org.yvka.Beleg2.game.GameBoard;
 import org.yvka.Beleg2.game.GameBoard.Stone;
 import org.yvka.Beleg2.game.GameEvent;
-import org.yvka.Beleg2.game.GameEventListener;
+import org.yvka.Beleg2.game.GameEventHandler;
 import org.yvka.Beleg2.game.Player;
 
-public class StoneField extends Parent implements GameEventListener {
+public class StoneField extends Parent implements GameEventHandler {
 	
 	public interface OnFieldClickHandler {
 		public void handle(StoneField field, MouseEvent event);
@@ -115,7 +115,8 @@ public class StoneField extends Parent implements GameEventListener {
 	}
 
 	@Override
-	public void OnGameEvent(GameBoard board, GameEvent event) {
+	public void OnGameEvent(GameEvent event) {
+		GameBoard board = event.getSrcGameBoard();
 		currentPlayer = board.getCurrentPlayer();
 		setState(board.getStone(row, col));
 	}

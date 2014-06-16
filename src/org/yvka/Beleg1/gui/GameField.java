@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 
 
 import javafx.scene.Group;
@@ -6,10 +6,10 @@ import javafx.scene.layout.Region;
 
 import org.yvka.Beleg2.game.GameBoard;
 import org.yvka.Beleg2.game.GameEvent;
-import org.yvka.Beleg2.game.GameEventListener;
+import org.yvka.Beleg2.game.GameEventHandler;
 
 
-public class GameField extends Region implements GameEventListener {
+public class GameField extends Region implements GameEventHandler {
 	
 	private static final int DEFAULT_FIELD_SIZE = 8;
 	private static final int FIELD_GAP_WIDTH = 0;
@@ -20,7 +20,7 @@ public class GameField extends Region implements GameEventListener {
 	public GameField(GameBoard board) {
 		setStyle("-fx-background-color: green;-fx-padding: 15;");
 		gameLogic = board;
-		gameLogic.registerGameEventListener(this);
+		gameLogic.registerGameEventHandler(this);
 		setSize(DEFAULT_FIELD_SIZE);
 	}
 	
@@ -29,7 +29,7 @@ public class GameField extends Region implements GameEventListener {
 	}
 	
 	public void setSize(int size) {
-		gameLogic.removeAllGameEventListenersByType(StoneField.class);
+		gameLogic.removeAllGameEventHandlersByType(StoneField.class);
 		this.size = size;
 		fieldGroup = new Group();
 		fieldGroup.relocate(30, 30);
@@ -42,7 +42,7 @@ public class GameField extends Region implements GameEventListener {
 						gameLogic.setStone(currField.getRow(), currField.getCol());
 					}
 				});
-				gameLogic.registerGameEventListener(field);
+				gameLogic.registerGameEventHandler(field);
 				field.relocate(
 					col *(StoneField.FIELD_WIDTH + FIELD_GAP_WIDTH), 
 					row * (StoneField.FIELD_WIDTH + FIELD_GAP_WIDTH));			
@@ -58,7 +58,7 @@ public class GameField extends Region implements GameEventListener {
 	}
 	
 	@Override
-	public void OnGameEvent(GameBoard board, GameEvent event) {	
+	public void OnGameEvent(GameEvent event) {	
 		switch(event.getState()) {
 			case NEW_GAME:
 			break;

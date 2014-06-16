@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;

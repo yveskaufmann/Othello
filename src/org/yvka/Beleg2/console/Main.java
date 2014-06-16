@@ -1,17 +1,16 @@
-package org.yvka.Beleg2;
+package org.yvka.Beleg2.console;
 
-import org.yvka.Beleg1.ui.IOTools;
 import org.yvka.Beleg2.game.GameBoard;
 import org.yvka.Beleg2.game.GameEvent;
-import org.yvka.Beleg2.game.GameEventListener;
+import org.yvka.Beleg2.game.GameEventHandler;
 
 /**
- * Main entry point of this application.
+ * Main entry point of the console based othello application.
  * 
  * @author Yves Kaufmann
  *
  */
-public class Main implements GameEventListener{
+public class Main implements GameEventHandler{
 	/**
 	 * Just the main function which is the main entry point.
 	 * 
@@ -19,12 +18,13 @@ public class Main implements GameEventListener{
 	 */
 	public static void main(String[] args) {
 		GameBoard field = new GameBoard();
-		field.registerGameEventListener(new Main());
+		field.registerGameEventHandler(new Main());
 		field.startNewGame(8);
 	}
 	
 	@Override
-	public void OnGameEvent(GameBoard board, GameEvent event) {
+	public void OnGameEvent(GameEvent event) {
+		GameBoard board = event.getSrcGameBoard();
 		switch(event.getState()) {
 			case NEW_GAME:
 				System.out.println("Welcome to Othello.");

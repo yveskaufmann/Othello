@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -76,7 +76,7 @@ public class GameEndNotification extends BorderPane {
 		whitePlayerLabel.setTextFill(Color.WHITE);
 		whitePlayerLabel.setFont(new Font(30));
 		
-		whitePoints = new Label(firstPlayer.getStones() + "");
+		whitePoints = new Label(firstPlayer.getCountOfStones() + "");
 		whitePoints.setTextFill(Color.WHITE);
 		whitePoints.setFont(new Font(20));
 		
@@ -88,7 +88,7 @@ public class GameEndNotification extends BorderPane {
 		blackPlayerLabel.setTextFill(Color.WHITE);
 		blackPlayerLabel.setFont(new Font(30));
 		
-		blackPoints = new Label(secondPlayer.getStones() + "");
+		blackPoints = new Label(secondPlayer.getCountOfStones() + "");
 		blackPoints.setTextFill(Color.WHITE);
 		blackPoints.setFont(new Font(20));
 		blackPoints.setAlignment(Pos.CENTER);
@@ -133,7 +133,7 @@ public class GameEndNotification extends BorderPane {
 	 * @return the GameOver message.
 	 */
 	private String generateGameOverLabelText() {
-		int pointsComparedFlag = Integer.compare(whitePlayer.getStones(), blackPlayer.getStones());
+		int pointsComparedFlag = Integer.compare(whitePlayer.getCountOfStones(), blackPlayer.getCountOfStones());
 		
 		if(pointsComparedFlag == 0) {
 			return "Draw!";

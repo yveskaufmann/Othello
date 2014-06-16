@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg2.console;
 
 import java.io.BufferedReader;
 import java.io.IOException;

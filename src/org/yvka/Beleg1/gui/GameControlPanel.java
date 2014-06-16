@@ -1,4 +1,4 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.event.ActionEvent;
@@ -16,10 +16,10 @@ import javafx.util.Callback;
 
 import org.yvka.Beleg2.game.GameBoard;
 import org.yvka.Beleg2.game.GameEvent;
-import org.yvka.Beleg2.game.GameEventListener;
+import org.yvka.Beleg2.game.GameEventHandler;
 
 
-public class GameControlPanel extends Parent implements GameEventListener {
+public class GameControlPanel extends Parent implements GameEventHandler {
 	
 	private static final String GAME_FIELD_CHILD_CHOOSER = "gameFieldChildChooser";
 	private ComboBox<Integer> fieldSizeChooser;
@@ -30,7 +30,7 @@ public class GameControlPanel extends Parent implements GameEventListener {
 	
 	public GameControlPanel(GameBoard gameLogic) {
 		
-		gameLogic.registerGameEventListener(this);
+		gameLogic.registerGameEventHandler(this);
 		fieldSizeChooser = new ComboBox<>();
 		fieldSizeChooser.setId(GAME_FIELD_CHILD_CHOOSER);
 		fieldSizeChooser.setValue(8);
@@ -64,8 +64,8 @@ public class GameControlPanel extends Parent implements GameEventListener {
 	}
 	
 	@Override
-	public void OnGameEvent(GameBoard board, GameEvent event) {
-		
+	public void OnGameEvent(GameEvent event) {
+		GameBoard board = event.getSrcGameBoard();
 		whitePlayerLabel.setAsCurrentPlayer(board.getCurrentPlayer().equals(board.getFirstPlayer()));
 		blackPlayerLabel.setAsCurrentPlayer(board.getCurrentPlayer().equals(board.getSecondPlayer()));
 		

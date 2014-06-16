@@ -1,6 +1,5 @@
-package org.yvka.Beleg1.ui;
+package org.yvka.Beleg1.gui;
 	
-
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -19,9 +18,7 @@ import javafx.util.Duration;
 import org.yvka.Beleg2.game.GameBoard;
 
 public class OthelloApplication extends Application {
-	
 
-	
 	public static final String MODAL_DIMMER_ID = "modalDimmer";
 	public static final String GAME_FIELD_ID = "gameField";
 	public static final String CONTROL_PANEL_ID = "controlPanel";

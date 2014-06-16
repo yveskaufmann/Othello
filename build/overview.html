@@ -15,14 +15,17 @@
 		<li>displays the stones of each player</li>
 		<li>the game end if all stone are set</li>
 		<li>custom game field size[6-10]</li>
-		<li>user interface with swing</li>
+		<li>graphical user interface</li>
 	</ul>
     </p>
-    <h2>The User Interface</h2>
+    <h2>The Reversi Application</h2>
     <p>
-    </p>
-    <h2>The Architecture</h2>
-    <p>
+    The application is split into three parts: 
+    <ol>
+		<li>The game logic objects [org.yvka.Beleg2.game.*] - which contains the classes of the game logic.<br><br></li>
+		<li>The console user interface  [org.yvka.Beleg2.console.*] - which contains only classes which implements the console user interface.<br><br></li>
+		<li>The gui user interface  [org.yvka.Beleg2.gui.*] - which contains only classes which implements the graphical user interface.<br><br></li>
+    </ol>	
     </p>
     @version 1.0
     @author Yves Kaufmann
