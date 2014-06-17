@@ -9,25 +9,57 @@ import org.yvka.Beleg2.game.GameEvent;
 import org.yvka.Beleg2.game.GameEventHandler;
 
 
-public class GameField extends Region implements GameEventHandler {
+/**
+ * This class implements the representation of the othello game board.
+ * 
+ * @author Yves Kaufmann
+ *
+ */
+public class GameBoardUI extends Region implements GameEventHandler {
 	
+	/**
+	 * The default size of the game field. 
+	 */
 	private static final int DEFAULT_FIELD_SIZE = 8;
+	
+	/**
+	 * The gap size between field. 
+	 */
 	private static final int FIELD_GAP_WIDTH = 0;
+	
 	private GameBoard gameLogic = null;
 	private Group fieldGroup;
 	private int size;
 	
-	public GameField(GameBoard board) {
+	/**
+	 * Creates a game field and specifies the game logic.
+	 * 
+	 * @param board the game logic of the game.
+	 */
+	public GameBoardUI(GameBoard board) {
 		setStyle("-fx-background-color: green;-fx-padding: 15;");
 		gameLogic = board;
 		gameLogic.registerGameEventHandler(this);
 		setSize(DEFAULT_FIELD_SIZE);
 	}
 	
+	/**
+	 * Triggers the start of a new game.
+	 */
 	public void startNewGame() {
 		setSize(size);
 	}
 	
+	/**
+	 * <p>
+	 * Set the size of the game field and triggers the start of a new game.
+	 * <br>
+	 * Creates the gamefield and register his event listeners.<br>
+	 * </p>
+	 * 
+	 * 
+	 * @param size the new size of the game field.
+	 */
 	public void setSize(int size) {
 		gameLogic.removeAllGameEventHandlersByType(StoneField.class);
 		this.size = size;
@@ -57,13 +89,17 @@ public class GameField extends Region implements GameEventHandler {
 		gameLogic.startNewGame(size);
 	}
 	
+	/**
+	 * Handles the occurring of the end game event
+	 * and shows in this case the GameEndNotification. 
+	 */
 	@Override
 	public void OnGameEvent(GameEvent event) {	
 		switch(event.getState()) {
 			case NEW_GAME:
 			break;
 			case END_GAME:
-				OthelloApplication
+				OthelloGuiApplication
 				.getInstance()
 				.showModalDimmer(
 					new GameEndNotification(
