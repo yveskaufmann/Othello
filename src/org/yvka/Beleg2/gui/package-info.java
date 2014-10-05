@@ -13,5 +13,5 @@
  * @author Yves Kaufmann
  *
  */
-package org.yvka.Beleg1.gui;
+package org.yvka.Beleg2.gui;
 
