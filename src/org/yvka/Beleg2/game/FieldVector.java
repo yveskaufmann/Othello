@@ -5,8 +5,22 @@ import java.util.List;
 
 import org.yvka.Beleg2.game.GameBoard.Stone;
 
+/**
+ * <p>
+ * Encapsulates the coordinates of a field position
+ * and a direction of a othello game board.  
+ * </p>
+ * 
+ * @author Yves Kaufmann
+ *
+ */
 class FieldVector implements Cloneable {
-
+	/**
+	 * <p>
+	 * List of possible game field directions 
+	 * which should checked if a stone could be set.
+	 * </p> 
+	 */
 	public final static List<FieldVector> DIRECTIONS = Arrays.asList(
 		// Left
 		new FieldVector(null, 0, -1),
@@ -27,42 +41,111 @@ class FieldVector implements Cloneable {
 		
 	);
 	
-	private final GameBoard gamefield;
+	private final GameBoard gameboard;
 	int row;
 	int col;
 	
-	public FieldVector(GameBoard gamefield, int row, int col) {
-		this.gamefield = gamefield;
+	/**
+	 * <p>
+	 * Creates a FieldVector for a specified gameboard 
+	 * with specific coordinates.  
+	 * </p>
+	 * 
+	 * @param gameboard the gameboard on which this field vector should operate.
+	 * @param row the row component of this vectot 
+	 * @param col the column component of this vectot
+	 */
+	public FieldVector(GameBoard gameboard, int row, int col) {
+		this.gameboard = gameboard;
 		this.row = row;
 		this.col = col;
 	}
 	
+	/**
+	 * <p>
+	 * Returns the row component of this vector. 
+	 * </p>
+	 * 
+	 * @return the row component of this vector.
+	 */
 	public int getRow() {
 		return row;
 	}
 	
+	/**
+	 * <p>
+	 * Returns the column component of this vector. 
+	 * </p>
+	 * 
+	 * @return the column component of this vector.
+	 */
 	public int getCol() {
 		return col;
 	}
 	
+	/**
+	 * <p>
+	 * Performs a vector addition of this 
+	 * vector and a specified vector and saves
+	 * the result in this instance.
+	 * </p>
+	 * @param vector the specified vector which should added to this vector.
+	 */
 	public void add(FieldVector vector) {
 		this.row += vector.row;
 		this.col += vector.col;
 	}
 	
-	Stone getField() {
+	/**
+	 * <p>
+	 * Returns the content({@link Stone}) of the field which is pointed 
+	 * by this vector.
+	 *  </p>
+	 *  
+	 * @return the content of pointed game field.
+	 */
+	public Stone getField() {
 		ensureIsInBound();
-		return gamefield.fields[row][col];
+		return gameboard.fields[row][col];
 	}
 	
+	/**
+	 * <p>
+	 * Set the content({@link Stone}) of the field which is pointed 
+	 * by this vector.
+	 * </p>
+	 * 
+	 * @param stone the new content of the field which is pointed by this vector..
+	 */
 	void setField(Stone stone) {
 		ensureIsInBound();
-		gamefield.fields[row][col] = stone;
+		gameboard.fields[row][col] = stone;
 	} 
 	
+	/**
+	 * <p>
+	 * Checks if this vector is in the bound of 
+	 * the gameboard which is attached to this vector.
+	 * </p>
+	 * @return if this vector is in the bound of the gameboard.
+	 */
 	boolean isInBound() {
-		int fieldSize = this.gamefield.fields.length;
+		int fieldSize = this.gameboard.fields.length;
 		return (row >= 0 && row < fieldSize) && (col >= 0 && col < fieldSize) ;
+	}
+	
+	/**
+	 * <p>
+	 * Ensures that this field vector is in the 
+	 * bound of the attached game field.
+	 * </p>
+	 * 
+	 * @throws IndexOutOfBoundsException if the field vector is out of bounds.
+	 */
+	public void ensureIsInBound() {
+		if(!isInBound()) {
+			throw new IndexOutOfBoundsException("The field [" + row + "," + col + "] dosn't exists.");
+		}
 	}
 	
 	@Override
@@ -78,11 +161,6 @@ class FieldVector implements Cloneable {
 		return String.format("row = %d, col=%d", row, col);
 	}
 	
-	public void ensureIsInBound() {
-		if(!isInBound()) {
-			throw new IndexOutOfBoundsException("The field [" + row + "," + col + "] dosn't exists.");
-		}
-	}
 
 	@Override
 	public int hashCode() {

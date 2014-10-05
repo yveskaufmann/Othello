@@ -1,36 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"  ?>
-<project name="Othello" default="default" basedir=".">
+<project name="Othello" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
 	<description>
 		Just a simple build file which is used to build the application
 		and create the distribution of this project.
 	</description>
 	
+	<path id="fxant">
+  		<filelist>
+    		<file name="${java.home}\..\lib\ant-javafx.jar"/>
+    		<file name="${java.home}\lib\jfxrt.jar"/>
+    		<file name="${basedir}"/>
+  		</filelist>
+	</path>
+	
+	<taskdef 
+		resource="com/sun/javafx/tools/ant/antlib.xml"      
+		uri="javafx:com.sun.javafx.tools.ant"
+		classpathref="fxant"/>
 	
 	<property environment="env"/>
 	<property name="src" location="src/" />
 	<property name="test" location="test/" />
 	<property name="build" location="build" />
 	<property name="dist" location="dist/" />
-	<property name="target" value="Othello" />	
+	<property name="version" value="1.0" />
+	<property name="author" value="Yves Kaufmann" />
+	<property name="target" value="Othello" />
+	<property name="mainClass" value="org.yvka.Beleg2.gui.OthelloGuiApplication" />
 	
 	<target name="default" depends="clean,compile, javadoc, dist" />
-	
+	 
 	<target name="clean">
 		<delete dir="${dist}" />
 		<delete dir="${build}"/>
 	</target>
 	
 	<target name="compile" depends="clean">
+		
+		<!-- create the build directory -->
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}" includeAntRuntime="false"/>
-		<jar destfile="${build}/${target}.jar" basedir="${build}">
+		<mkdir dir="${build}/classes"/>
+		
+		<!-- compile java sources -->
+		<javac srcdir="${src}" destdir="${build}/classes" includeAntRuntime="false"/>
+		
+		<!-- copy resources into the build class folder -->
+		<copy todir="${build}/classes">
+		    <fileset dir="src" includes="**/*.css,**/*.png" />
+		</copy>
+		
+		<!-- defines a set of app resources -->
+		<fx:resources id="appResources">
+			<fx:fileset dir="${build}" includes="${target}.jar"/>
+			<fx:fileset dir="${build}" includes="libs/*"/>
+		</fx:resources>
+		
+		<!-- defines application settings -->
+		<fx:application id="fxApplication"
+			name="${target}"
+			mainClass="${mainClass}"
+			toolkit="fx"
+		/>
+		
+		<!-- creates the javafx jar file -->
+		<fx:jar destfile="${build}/${target}.jar">	
+			<fx:application refid="fxApplication" />
+			<fx:resources refid="appResources"/>
+			<fileset dir="${build}/classes" />
 			<manifest>
-				<attribute name="Main-Class" value="org.yvka.Beleg2.Main"></attribute>
-				<attribute name="Title" value="${target}"/>
-				<attribute name="Version" value="1.0"/>
-				<attribute name="Vendor" value="Yves Kaufmann"/>
+				<attribute name="Implementation-Vendor" value="${author}"/>
+				<attribute name="Implementation-Title" value="${target}"/>
+				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
-		</jar>
+		</fx:jar>	 
 	</target>
 	
 	<target name="javadoc" depends="compile">
@@ -48,14 +90,12 @@
 		  </javadoc>
 	</target>
 		
-	
 	<target name="dist" depends="javadoc">
 		<mkdir dir="${dist}"/>
 		<zip destfile="${dist}/${target}.zip">
-			<zipfileset dir="${build}" includes="${target}.jar" fullpath="${target}/lib/${target}.jar"/>
+			<zipfileset dir="${build}" includes="${target}.jar" fullpath="${target}/${target}.jar"/>
 			<zipfileset dir="${src}" prefix="${target}/src"/>
 			<zipfileset dir="docs" prefix="${target}/docu"/>
-			<zipfileset dir="bin" prefix="${target}/bin"/>
 		</zip>
 	</target>
 	
