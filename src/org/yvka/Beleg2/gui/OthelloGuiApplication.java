@@ -118,7 +118,7 @@ public class OthelloGuiApplication extends Application {
 			));
 			primaryStage.sizeToScene();
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Reversi");
+			primaryStage.setTitle("Reversis");
 			primaryStage.centerOnScreen();
 			primaryStage.show();
 			
