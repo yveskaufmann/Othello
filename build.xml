@@ -36,31 +36,43 @@
 	</target>
 	
 	<target name="compile" depends="clean">
+		
+		<!-- create the build directory -->
 		<mkdir dir="${build}"/>
 		<mkdir dir="${build}/classes"/>
+		
+		<!-- compile java sources -->
 		<javac srcdir="${src}" destdir="${build}/classes" includeAntRuntime="false"/>
+		
+		<!-- copy resources into the build class folder -->
+		<copy todir="${build}/classes">
+		    <fileset dir="src" includes="**/*.css,**/*.png" />
+		</copy>
+		
+		<!-- defines a set of app resources -->
 		<fx:resources id="appResources">
 			<fx:fileset dir="${build}" includes="${target}.jar"/>
 			<fx:fileset dir="${build}" includes="libs/*"/>
 		</fx:resources>
 		
+		<!-- defines application settings -->
 		<fx:application id="fxApplication"
-			name="$(target)"
+			name="${target}"
 			mainClass="${mainClass}"
 			toolkit="fx"
 		/>
 		
-		<fx:jar destfile="${build}/${target}.jar">
-			<fx:application refid="fxApplication"/>
-			<fileset dir="${build}/classes">
-			</fileset>
+		<!-- creates the javafx jar file -->
+		<fx:jar destfile="${build}/${target}.jar">	
+			<fx:application refid="fxApplication" />
 			<fx:resources refid="appResources"/>
+			<fileset dir="${build}/classes" />
 			<manifest>
 				<attribute name="Implementation-Vendor" value="${author}"/>
 				<attribute name="Implementation-Title" value="${target}"/>
 				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
-		</fx:jar>
+		</fx:jar>	 
 	</target>
 	
 	<target name="javadoc" depends="compile">
@@ -81,10 +93,9 @@
 	<target name="dist" depends="javadoc">
 		<mkdir dir="${dist}"/>
 		<zip destfile="${dist}/${target}.zip">
-			<zipfileset dir="${build}" includes="${target}.jar" fullpath="${target}/lib/${target}.jar"/>
+			<zipfileset dir="${build}" includes="${target}.jar" fullpath="${target}/${target}.jar"/>
 			<zipfileset dir="${src}" prefix="${target}/src"/>
 			<zipfileset dir="docs" prefix="${target}/docu"/>
-			<zipfileset dir="bin" prefix="${target}/bin"/>
 		</zip>
 	</target>
 	
